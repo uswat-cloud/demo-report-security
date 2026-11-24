@@ -1,26 +1,50 @@
 # Demo Report Security
 
-A deliberately vulnerable training sample for practising
-GitHub security scanning and remediation.
+A training application for reviewing GitHub security findings
+and validating a YAML report importer.
 
-## Starting behaviour
+## Input
 
-The application accepts YAML at POST /report and returns JSON.
-
-## Sample input
+POST /report accepts YAML containing exactly:
 
 service: Demo Portal
 status: healthy
 
-## Exercise scope
+Allowed statuses are healthy, degraded and unavailable.
 
-- Configure dependency alerts.
-- Configure code scanning.
-- Enable available secret protection.
-- Investigate actual findings.
-- Fix confirmed problems.
-- Add regression tests and verify the changes.
+## Input protections
 
-All information is fictional.
-Do not deploy the vulnerable baseline as a public service.
-Do not add real credentials or customer information.
+- Safe YAML loading.
+- Required service and status fields.
+- Nonblank string service name.
+- Restricted status values.
+- Invalid input returns HTTP 400.
+- Requests larger than 16 KiB return HTTP 413.
+
+## Tests
+
+Install dependencies:
+
+python -m pip install -r requirements.txt
+
+Run tests:
+
+python -m unittest discover -v
+
+Tests use Flask's test client.
+No public server deployment is needed.
+
+## Repository controls
+
+- CodeQL code scanning.
+- Dependabot vulnerability alerts.
+- Weekly dependency and GitHub Actions update checks.
+- Available secret scanning and push protection.
+
+## Scope
+
+All data is fictional.
+The original baseline was deliberately vulnerable.
+
+The changes address identified YAML-loading and dependency problems.
+Passing tests and scans are not a complete security audit.
